@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
-  Keyboard,
   Pressable,
   useWindowDimensions,
+  TextInput,
+  Keyboard,
 } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { createTextStyle } from "@/utils/theme";
-import AuthScreenWrapper from "@/app/components/global/AuthScreenWrapper";
 import LockSvg from "@/app/components/Svg/LockSvg";
+import { useUserStore } from "@/utils/store";
 
 export default function VerifyOtp() {
   const {width, height} = useWindowDimensions();
@@ -22,6 +22,7 @@ export default function VerifyOtp() {
   const heightScale = Math.min(height / 800, 1);
 
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const { setOtpCode } = useUserStore();
   const router = useRouter();
   const inputRefs = useRef<Array<TextInput | null>>([null, null, null, null]);
 
@@ -74,7 +75,7 @@ export default function VerifyOtp() {
   const handleContinue = () => {
     const otpString = otp.join("");
     if (otpString.length === 4) {
-      console.log("OTP submitted:", otpString);
+      setOtpCode(otpString);
       router.push("/(auth)/signup/inviteCode");
     }
   };
@@ -92,20 +93,35 @@ export default function VerifyOtp() {
   const privacyText = "your phone number is never shared with third parties.";
 
   return (
-    <AuthScreenWrapper 
-      keyboardAvoidingEnabled={true}
-      headerImage={require("../../../assets/images/visual.png")}
-      geometricBackground={require("../../../assets/images/graphic.png")}
-      headerTitle="JOIN US"
-      headerSubtitle="verify the OTP that we sent you on +91 6290880584"
-      titleStyle={styles.title}
-      subtitleStyle={styles.subtitle}
-      showOtpInput={true}
-      otp={otp}
-      onOtpChange={handleOtpChange}
-      onOtpKeyPress={handleKeyPress}
-      otpInputRefs={inputRefs}
-    >      
+    <View style={styles.container}>
+      <View style={styles.otpContainer}>
+        {otp.map((digit, index) => (
+          <View 
+            key={index} 
+            style={[
+              styles.otpInputWrapper,
+              digit ? styles.otpInputWrapperFilled : styles.otpInputWrapperEmpty
+            ]}
+          >
+            <TextInput
+              ref={el => {
+                if (inputRefs.current) {
+                  inputRefs.current[index] = el;
+                }
+              }}
+              style={styles.otpInput}
+              value={digit}
+              onChangeText={text => handleOtpChange(text, index)}
+              onKeyPress={e => handleKeyPress(e, index)}
+              keyboardType="number-pad"
+              maxLength={1}
+              selectionColor="white"
+              autoFocus={index === 0}
+            />
+          </View>
+        ))}
+      </View>
+
       <TouchableOpacity 
         style={[
           styles.button, 
@@ -132,36 +148,64 @@ export default function VerifyOtp() {
       </Pressable>
       
       <View style={styles.privacyContainer}>
-        <LockSvg />
-        <MaskedView
-          style={{ flex: 1 }}
-          maskElement={
-            <Text style={styles.privacyText}>{privacyText}</Text>
-          }
-        >
-          <LinearGradient
-            colors={["#FFFFFF", "#676767"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={{ flex: 1, opacity: 0.7 }}
+        <View style={styles.lockIcon}>
+          <LockSvg />
+        </View>
+        <View style={styles.privacyTextContainer}>
+          <MaskedView
+            maskElement={
+              <Text style={styles.privacyText}>{privacyText}</Text>
+            }
           >
-            <Text style={[styles.privacyText, { opacity: 0 }]}>
-              {privacyText}
-            </Text>
-          </LinearGradient>
-        </MaskedView>
+            <LinearGradient
+              colors={["#FFFFFF", "#676767"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            >
+              <Text style={[styles.privacyText, { opacity: 0 }]}>
+                {privacyText}
+              </Text>
+            </LinearGradient>
+          </MaskedView>
+        </View>
       </View>
-    </AuthScreenWrapper>
+    </View>
   );
 }
 
 // Create responsive styles function
 const createStyles = (scale: number, heightScale: number) => StyleSheet.create({
-  title: {
-    ...createTextStyle("medium", "md", "white"),
+  container: {
+    flex: 1,
+    alignItems: "flex-start",
+    backgroundColor: "#000504",
+    paddingTop: 58 * heightScale,
   },
-  subtitle: {
-    ...createTextStyle("bold", "xxl", "rgba(255,255,255,0.9)"),
+  otpContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginBottom: 20 * heightScale,
+    width: "100%",
+  },
+  otpInputWrapper: {
+    width: 48 * scale,
+    height: 60 * heightScale,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16 * scale,
+  },
+  otpInputWrapperFilled: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+  },
+  otpInputWrapperEmpty: {
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
+  otpInput: {
+    width: "100%",
+    height: "100%",
+    textAlign: "center",
+    ...createTextStyle("medium", "xl", "white"),
   },
   button: {
     borderRadius: 1,
@@ -196,12 +240,22 @@ const createStyles = (scale: number, heightScale: number) => StyleSheet.create({
   },
   privacyContainer: {
     flexDirection: "row",
+    alignItems: "flex-start",
     marginTop: 24 * heightScale,
+    width: "100%",
+  },
+  lockIcon: {
+    marginTop: 2 * heightScale,
+  },
+  privacyTextContainer: {
+    flex: 1,
+    marginLeft: 8 * scale,
   },
   privacyText: {
     ...createTextStyle("regular", "xl", "white"),
-    marginLeft: 8 * scale,
     letterSpacing: -0.8,
+    flexWrap: "wrap",
+    flexShrink: 1,
   },
   resendContainer: {
     marginTop: 20 * heightScale,
