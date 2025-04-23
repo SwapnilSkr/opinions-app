@@ -20,6 +20,7 @@ import { useUserStore } from "@/utils/store";
 import MaskedView from "@react-native-masked-view/masked-view";
 import LockSvg from "../Svg/LockSvg";
 import RightArrowSvg from "../Svg/RightArrowSvg";
+
 type AuthScreenWrapperProps = {
   children: ReactNode;
   onButtonPress?: () => void;
@@ -148,7 +149,9 @@ export default function AuthScreenWrapper({
 
             {!content.showCustomPrivacy && privacyText !== "" && (
               <View style={styles.privacyContainer}>
-                <LockSvg />
+                <View style={styles.lockIcon}>
+                  <LockSvg />
+                </View>
                 <MaskedView
                   style={styles.maskWrapper} // ← apply marginLeft here
                   maskElement={
@@ -159,9 +162,9 @@ export default function AuthScreenWrapper({
                     colors={["#FFFFFF", "#676767"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 0, y: 1 }}
-                    style={{ flex: 1 }} // ← fill the mask, no extra margin
+                    style={{ flex: 1}} // ← fill the mask, no extra margin
                   >
-                    {/* invisible text to actually “paint” the gradient */}
+                    {/* invisible text to actually "paint" the gradient */}
                     <Text style={[styles.privacyText, { opacity: 0 }]}>
                       {privacyText}
                     </Text>
@@ -206,12 +209,21 @@ const createStyles = (scale: number, heightScale: number) =>
       height: 400 * heightScale,
       opacity: 0.75,
     },
-    textContainer: { position: "absolute", bottom: 16 },
-    title: { fontSize: 16, color: "white", marginBottom: 4 },
+    textContainer: { position: "absolute", bottom: 20 * heightScale },
+    title: {
+      ...createTextStyle("plusJakartaSansMedium", "md", "white"),
+      marginBottom: 4 * heightScale,
+      opacity: 0.4,
+    },
     subtitle: {
-      fontSize: 24,
-      fontWeight: "bold",
-      color: "rgba(255,255,255,0.9)",
+      ...createTextStyle(
+        "plusJakartaSansBold",
+        "xxxl",
+        "rgba(255,255,255,0.9)"
+      ),
+      fontSize: 26 * heightScale,
+      lineHeight: 30 * heightScale,
+      letterSpacing: -0.56 * heightScale,
     },
     gradientBorder: {
       position: "absolute",
@@ -222,33 +234,48 @@ const createStyles = (scale: number, heightScale: number) =>
     },
     button: {
       marginTop: 30 * heightScale,
-      paddingVertical: 16 * heightScale,
+      paddingVertical: 14 * heightScale,
+      paddingHorizontal: 24 * scale,
       alignItems: "center",
       borderRadius: 1,
       width: "50%",
       flexDirection: "row",
       justifyContent: "center",
       gap: 16 * scale,
+      borderColor: "rgba(255,255,255,0.01)",
+      borderWidth: 1,
     },
     buttonActive: { backgroundColor: "white" },
-    buttonInactive: { backgroundColor: "rgba(255,255,255,0.1)" },
-    buttonText: { fontSize: 18, color: "#000504" },
+    buttonInactive: { backgroundColor: "rgba(255,255,255,0.2)" },
+    buttonText: {
+      ...createTextStyle("plusJakartaSansMedium", "lg", "#000504"),
+      fontWeight: "600",
+      letterSpacing: -0.4 * heightScale,
+    },
     resendContainer: { marginTop: 20 * heightScale },
-    resendText: { color: "rgba(255,255,255,0.6)" },
+    resendText: {
+      ...createTextStyle("plusJakartaSansMedium", "md", "rgba(255,255,255,0.6)"),
+    },
     resendLink: { color: "white" },
 
     privacyContainer: {
       flexDirection: "row",
-      alignItems: "flex-start",
-      marginTop: 20 * heightScale,
+      alignItems: "center",
+      marginTop: 27 * heightScale,
+      position: "relative",
     },
     maskWrapper: {
       flex: 1,
-      marginLeft: 6 * scale,
+      marginLeft: 12 * scale,
     },
     privacyText: {
-      ...createTextStyle("regular", "xl", "white"),
-      flexWrap: "wrap",
+      ...createTextStyle("plusJakartaSansMedium", "lg", "white"),
+      letterSpacing: -0.8 * heightScale,
+      lineHeight: 28 * heightScale,
+      fontWeight: "500",
       opacity: 0.6,
+    },
+    lockIcon: {
+      paddingBottom: 24 * heightScale,
     },
   });

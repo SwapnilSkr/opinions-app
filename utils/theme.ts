@@ -6,6 +6,8 @@ export const typography = {
     bold: 'Gilroy-Bold',
     heavy: 'Gilroy-Heavy',
     mono: 'SpaceMono-Regular',
+    plusJakartaSansBold: 'PlusJakartaSans-Bold',
+    plusJakartaSansMedium: 'PlusJakartaSans-Medium',
   },
   fontSize: {
     xs: 12,

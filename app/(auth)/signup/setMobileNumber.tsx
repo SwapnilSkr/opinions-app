@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, TextInput, useWindowDimensions } from "react-native";
 import { useUserStore } from "@/utils/store";
 import NumberPadSvg from "../../components/Svg/NumberPadSvg";
+import { createTextStyle } from "@/utils/theme";
 
 export default function SetMobileNumber() {
   const { width, height } = useWindowDimensions();
@@ -59,5 +60,11 @@ const createStyles = (scale: number, heightScale: number) =>
     inputContainerFilled: {
       borderColor: "rgba(255, 255, 255, 0.20)", // Teal color for filled inputs
     },
-    input: { flex: 1, color: "white", fontSize: 18, marginLeft: 16 * scale },
+    input: {
+      ...createTextStyle("plusJakartaSansMedium", "xl", "white"),
+      flex: 1,
+      marginLeft: 16 * scale,
+      fontWeight: "400",
+      letterSpacing: -0.4 * heightScale,
+    },
   });

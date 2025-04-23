@@ -2,17 +2,22 @@
 import React from "react";
 import { Slot, usePathname, useRouter } from "expo-router";
 import AuthScreenWrapper from "../components/global/AuthScreenWrapper";
-import { View, StyleSheet, Text, ViewStyle } from "react-native";
+import { View, StyleSheet, Text, ViewStyle, useWindowDimensions } from "react-native";
 import { useUserStore } from "@/utils/store";
+import { createTextStyle } from "@/utils/theme";
 
 type LayoutProps = {};
 
 export default function AuthLayout(props: LayoutProps) {
+  const {width, height} = useWindowDimensions();
+  const scale = Math.min(width / 375, 1);
+  const heightScale = Math.min(height / 800, 1);
   const router = useRouter();
   const pathname = usePathname();
   const { mobileNumber, otpCode, inviteCode, setAuthenticated } =
     useUserStore();
 
+  const styles = createStyles(scale, heightScale);
   const getButtonDisabled = () => {
     if (pathname.includes("setMobileNumber")) {
       return mobileNumber.length < 10;
@@ -65,23 +70,21 @@ export default function AuthLayout(props: LayoutProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (scale: number, heightScale: number) => StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000504" },
   privacyContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "flex-start",
     marginTop: 24,
   },
   privacyText: {
-    fontFamily: "Inter-Regular",
-    fontSize: 18,
-    color: "rgba(255,255,255,0.40)",
-    letterSpacing: -0.4,
+    ...createTextStyle("plusJakartaSansMedium", "xl", "rgba(255,255,255,0.6)"),
+    letterSpacing: -0.4 * heightScale,
+    lineHeight: 22 * heightScale,
   },
   privacyTextHighlight: {
-    fontFamily: "Inter-Regular",
-    fontSize: 18,
-    color: "white",
-    letterSpacing: -0.4,
+    ...createTextStyle("plusJakartaSansMedium", "xl", "white"),
+    letterSpacing: -0.4 * heightScale,
+    lineHeight: 22 * heightScale,
   },
 });
