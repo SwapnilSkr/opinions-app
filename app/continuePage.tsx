@@ -29,7 +29,7 @@ export default function ContinuePage({ onStart }: Props) {
     <View style={styles.container}>
       {/* background checkmark */}
       <Image
-        source={require("../../../assets/images/checkmark.png")}
+        source={require("../assets/images/checkmark.png")}
         style={styles.checkmark}
         contentFit="contain"
       />
