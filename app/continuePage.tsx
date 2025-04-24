@@ -10,12 +10,10 @@ import { Image } from "expo-image";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { createTextStyle } from "@/utils/theme";
+import { useRouter } from "expo-router";
 
-type Props = {
-  onStart: () => void;
-};
-
-export default function ContinuePage({ onStart }: Props) {
+export default function ContinuePage() {
+  const router = useRouter();
   const { width, height } = useWindowDimensions();
   const scale = Math.min(width / 375, 1);
   const heightScale = Math.min(height / 800, 1);
@@ -24,6 +22,10 @@ export default function ContinuePage({ onStart }: Props) {
   const upperText = "take your first survey for us to get to know you. speak your mind – no pressure to type! no abusive words, your feedback is anonymized.";
   const bottomText =
     "this survey is your first step in, it helps us tailor the experience just for you.";
+
+  const handleContinue = () => {
+    router.push("/(onboarding)/firstQuestion");
+  };
 
   return (
     <View style={styles.container}>
@@ -54,7 +56,7 @@ export default function ContinuePage({ onStart }: Props) {
           </LinearGradient>
         </MaskedView>
 
-        <TouchableOpacity style={styles.button} onPress={onStart}>
+        <TouchableOpacity style={styles.button} onPress={handleContinue}>
           <Text style={styles.buttonText}>understood, let’s start!</Text>
         </TouchableOpacity>
 

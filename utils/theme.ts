@@ -7,6 +7,7 @@ export const typography = {
     heavy: 'Gilroy-Heavy',
     mono: 'SpaceMono-Regular',
     plusJakartaSansBold: 'PlusJakartaSans-Bold',
+    plusJakartaSansSemiBold: 'PlusJakartaSans-SemiBold',
     plusJakartaSansMedium: 'PlusJakartaSans-Medium',
   },
   fontSize: {

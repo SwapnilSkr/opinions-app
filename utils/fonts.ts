@@ -7,6 +7,7 @@ export const fonts = {
   "Gilroy-Bold": require("../assets/fonts/Gilroy-Bold.ttf"),
   "Gilroy-Heavy": require("../assets/fonts/Gilroy-Heavy.ttf"),
   "PlusJakartaSans-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
+  "PlusJakartaSans-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   "PlusJakartaSans-Medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
   "SpaceMono-Regular": require("../assets/fonts/SpaceMono-Regular.ttf"),
 };
